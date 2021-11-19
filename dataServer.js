@@ -9,19 +9,13 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.listen(3000, 'localhost', function () {
+app.listen(8080, 'ec2-52-79-41-120.ap-northeast-2.compute.amazonaws.com', function () {
     console.log('서버 실행 중...');
     
 });
 
 // 비밀번호는 별도의 파일로 분리해서 버전관리에 포함시키지 않아야 합니다. 
-var connection = mysql.createConnection({
-    host     : 'dataserver.cl3y46ehchzv.ap-northeast-2.rds.amazonaws.com',    // 호스트 주소
-    user     : 'admin',           // mysql user
-    password : 'dh134679!',       // mysql password
-    database : 'dataServer',     // mysql 데이터베이스
-    port: 3306
-});
+
   
 //connection.connect();
 
@@ -30,7 +24,7 @@ app.get('/users/:id', function (req, res)
 {
     var uid = req.body.uid;
     var sql = 'select * from PROFILE where uid = ?'
-    
+
     connection.query(sql,uid,function(err,result){
         if(err){
             console.log(err);
@@ -50,41 +44,57 @@ app.get('/users/:id', function (req, res)
     })  
 });
 
+
 //회원가입 api. 로그인하고 uid가 없을 때(프로필 정보 입력)
 app.post('/users',function(req,res){
     console.log(req.body);
     
     var uid = req.body.uid;
-    var name = req.body.userName;
+    var name = req.body.name;
     var image = req.body.image;
     var birth = req.body.birth;
     var blog = req.body.blog;
     var gender = req.body.gender;
     var Cate_num = req.body.Cate_num;
     var email = req.body.email;
-
-    var sql = 'insert into PROFILE (uid,name,image,birth,blog,gender,Cate_num,email) values(?,?,?,?,?,?,?,?)';
-    var params = [uid,name,image,birth,blog,gender,Cate_num,email];
+    var school = req.body.school;
+    var major = req.body.major;
+    var tag = req.body.tag;
+    var sql = 'insert into PROFILE (uid,name,image,birth,blog,gender,Cate_num,email,school,major,tag) values(?,?,?,?,?,?,?,?,?,?,?)';
+    var params = [uid,name,image,birth,blog,gender,Cate_num,email,school,major,tag];
 
     connection.query(sql, params, function (err, result) {
         
         if (err) {
             console.log(err);
         } else {
-            var message = 'success';
-            
+            var message = 'success';    
         }
         res.json({
             'message': message
         });
     });
-
 }); //첫 회원가입. 기본 정보들 입력해야 함.
 
 //전체 회원 조회
 app.get('/users', function (req, res) 
 {
-    var sql = 'select * from PROFILE'
+    var sql = 'SELECT a.*,b.*,c.*,d.* FROM PROFILE as a LEFT JOIN STACK as b ON a.uid = b.uid LEFT JOIN CERTIFICATE as c ON a.uid = c.uid LEFT JOIN PART_HIST as d ON a.uid = d.uid'
+    
+    connection.query(sql,function(err,result){
+        if(err){
+            console.log(err);
+        }
+        else {
+            res.json(result); //결과 보냄  
+        }
+    })  
+});
+
+//메인화면 프로필 보기
+app.get('/main/user', function (req, res) 
+{
+    var sql = '(select name,image,tag,school,major from PROFILE order by uid desc limit 0, 5) order by rand()'
     
     connection.query(sql,function(err,result){
         if(err){
@@ -97,6 +107,35 @@ app.get('/users', function (req, res)
 });
 
 //회원 정보 수정
+app.post('/users/update', function (req, res) 
+{
+    var uid = req.body.uid;
+    var name = req.body.name;
+    var image = req.body.image;
+    var birth = req.body.birth;
+    var blog = req.body.blog;
+    var gender = req.body.gender;
+    var Cate_num = req.body.Cate_num;
+    var email = req.body.email;
+    var school = req.body.school;
+    var major = req.body.major;
+    var tag = req.body.tag;
+
+    var params = [name,image,birth,blog,gender,Cate_num,email,school,major,tag,uid];
+    var sql = 'update PROFILE set name = ?, image = ?, birth = ?, blog = ?, gender = ?, Cate_num = ?, emaile = ? ,school=?, major =?,tag=? where uid = ?'
+    
+    connection.query(sql,params,function(err,result){
+        if (err) {
+            console.log(err);
+        } else {
+            var message = 'success';
+            
+        }
+        res.json({
+            'message': message
+        });
+    })  
+});
 
 
 
@@ -133,7 +172,6 @@ app.post('/teams',function(req,res){
                 });
             });
         }
-
         res.json({
             'message': message
         });
