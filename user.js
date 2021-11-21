@@ -36,7 +36,6 @@ exports.getUser = function(req,res)
     
 };
 
-
 //회원가입 api. 로그인하고 uid가 없을 때(프로필 정보 입력)
 exports.postUser = function (req,res){
 
@@ -83,7 +82,7 @@ exports.postUser = function (req,res){
 //전체 회원 조회
 exports.getAllUser = function (req, res) 
 {
-    var sql = 'SELECT a.*,b.*,c.*,d.* FROM PROFILE as a LEFT JOIN STACK as b ON a.uid = b.uid LEFT JOIN CERTIFICATE as c ON a.uid = c.uid LEFT JOIN PART_HIST as d ON a.uid = d.uid'
+    var sql = 'SELECT a.uid,a.name,a.image,a.tag,a.school,a.major, b.is_like from PROFILE as a LEFT JOIN INTEREST as b ON a.uid = b.inter_uid  order by a.uid desc'
     
     db.getConnection((conn)=>{
         conn.query(sql,function(err,result){
@@ -124,7 +123,7 @@ exports.getMyProfile = function(req,res){
         conn.release();
     });
 
-}
+};
 
 //회원정보 수정
 exports.updateUser =function (req, res) 
@@ -166,4 +165,5 @@ exports.updateUser =function (req, res)
 
     });
 };
+
 

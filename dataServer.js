@@ -62,11 +62,16 @@ var mainApi = require('./main');
 app.get('/main/user', mainApi.getUser_main);//메인화면 프로필 보기
 app.get('/main/compet',mainApi.getCompet_main);//메인화면 공모전 정보 보기
 
+//좋아요 처리 api
+var likeApi = require('./like');
+app.post('/like',likeApi.putLike); //좋아요 사람 추가
+app.post('/like/delete',likeApi.deleteLike); //좋아요 사람 삭제
+
 
 //팀 생성 api
 var teamApi = require('./team');
-app.post('/teams', teamApi.postTeam);
-app.delete('/teams/:id',teamApi.deleteTeam);//팀 삭제
+app.post('/teams', teamApi.postTeam); //팀 생성
+app.post('/teams/:id',teamApi.deleteTeam);//팀 삭제
 app.get('/teams',teamApi.getAllTeam);//모든 팀 정보 가져오기
 app.get('/teams/:id',teamApi.getTeam);//나의 팀 정보 가져오기(공모전 정보와 함께) 전부
 

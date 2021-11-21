@@ -2,9 +2,10 @@
 var db = require('./db');
 reqBodySchema = db.reqBodySchema;
 
+//공모전 정보 다 가져오기
 exports.getAllCompet=function(req,res){
 
-    var sql = 'select * from COMPET_INFO '
+    var sql = 'select * from COMPET_INFO order by desc'
 
     connection.query(sql,function(err,result){
         if(err){
@@ -15,3 +16,5 @@ exports.getAllCompet=function(req,res){
         }
     })  
 };
+
+//북마크 처리
