@@ -1,309 +1,111 @@
 var mysql      = require('mysql');
 var express = require('express');
 var bodyParser = require('body-parser');
+var router = express.Router();
 const json = require('body-parser/lib/types/json');
 var app = express();
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const aws = require('aws-sdk');
+const fs = require('fs'); // 설치 x
+const path = require('path'); // 설치 x
 
+const config = require('./db.json');
+const configs3 = require('./s3.json');
+require('dotenv').config();
+
+var getC = require('./db');
 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.listen(8080, 'ec2-52-79-41-120.ap-northeast-2.compute.amazonaws.com', function () {
-    console.log('서버 실행 중...');
-    
-});
 
-// 비밀번호는 별도의 파일로 분리해서 버전관리에 포함시키지 않아야 합니다. 
-
-  
-//connection.connect();
-
-//로그인 api : 자기자신 프로필 정보 가져오기
-app.get('/users/:id', function (req, res)
-{
-    var uid = req.body.uid;
-    var sql = 'select * from PROFILE where uid = ?'
-
-    connection.query(sql,uid,function(err,result){
-        if(err){
-            console.log(err);
-        }
-        else{ //uid 저장된게 없는 경우 (처음 로그인)
-            if(result.length===0){
-                var message = 'new'; //첫 로그인임을 알림
-
-                res.json({ //보내기
-                    'message':message
-                });  
-            }
-            else {
-                res.json(result); //결과 보냄
-            }
-        }
-    })  
-});
-
-
-//회원가입 api. 로그인하고 uid가 없을 때(프로필 정보 입력)
-app.post('/users',function(req,res){
-    console.log(req.body);
-    
-    var uid = req.body.uid;
-    var name = req.body.name;
-    var image = req.body.image;
-    var birth = req.body.birth;
-    var blog = req.body.blog;
-    var gender = req.body.gender;
-    var Cate_num = req.body.Cate_num;
-    var email = req.body.email;
-    var school = req.body.school;
-    var major = req.body.major;
-    var tag = req.body.tag;
-    var sql = 'insert into PROFILE (uid,name,image,birth,blog,gender,Cate_num,email,school,major,tag) values(?,?,?,?,?,?,?,?,?,?,?)';
-    var params = [uid,name,image,birth,blog,gender,Cate_num,email,school,major,tag];
-
-    connection.query(sql, params, function (err, result) {
+    app.listen(3000, 'localhost', function () {
+        console.log('서버 실행 중...');
         
-        if (err) {
-            console.log(err);
-        } else {
-            var message = 'success';    
-        }
-        res.json({
-            'message': message
-        });
     });
-}); //첫 회원가입. 기본 정보들 입력해야 함.
-
-//전체 회원 조회
-app.get('/users', function (req, res) 
-{
-    var sql = 'SELECT a.*,b.*,c.*,d.* FROM PROFILE as a LEFT JOIN STACK as b ON a.uid = b.uid LEFT JOIN CERTIFICATE as c ON a.uid = c.uid LEFT JOIN PART_HIST as d ON a.uid = d.uid'
     
-    connection.query(sql,function(err,result){
-        if(err){
-            console.log(err);
-        }
-        else {
-            res.json(result); //결과 보냄  
-        }
-    })  
-});
-
-//메인화면 프로필 보기
-app.get('/main/user', function (req, res) 
-{
-    var sql = '(select name,image,tag,school,major from PROFILE order by uid desc limit 0, 5) order by rand()'
     
-    connection.query(sql,function(err,result){
-        if(err){
-            console.log(err);
-        }
-        else {
-            res.json(result); //결과 보냄  
-        }
-    })  
-});
-
-//회원 정보 수정
-app.post('/users/update', function (req, res) 
-{
-    var uid = req.body.uid;
-    var name = req.body.name;
-    var image = req.body.image;
-    var birth = req.body.birth;
-    var blog = req.body.blog;
-    var gender = req.body.gender;
-    var Cate_num = req.body.Cate_num;
-    var email = req.body.email;
-    var school = req.body.school;
-    var major = req.body.major;
-    var tag = req.body.tag;
-
-    var params = [name,image,birth,blog,gender,Cate_num,email,school,major,tag,uid];
-    var sql = 'update PROFILE set name = ?, image = ?, birth = ?, blog = ?, gender = ?, Cate_num = ?, emaile = ? ,school=?, major =?,tag=? where uid = ?'
+    //s3 연결
+    const s3 = new aws.S3(configs3);
+      
+      const upload = multer({
+        storage: multerS3({
+            s3: s3,
+            bucket: "moizaimage", // 버킷 이름
+            //contentType: multerS3.AUTO_CONTENT_TYPE, // 자동을 콘텐츠 타입 세팅
+            acl: 'public-read', // 클라이언트에서 자유롭게 가용하기 위함
+            key: (req, file, cb) => {
+                console.log(file);
+                cb(null, file.originalname)
+            },
+        }),
+      });
     
-    connection.query(sql,params,function(err,result){
-        if (err) {
-            console.log(err);
-        } else {
-            var message = 'success';
-            
-        }
-        res.json({
-            'message': message
-        });
-    })  
-});
+      
+
+    //connection.connect();
 
 
+//유저, 프로필 관련
+var userApi = require('./user');
+
+app.get('/users/login/:id', userApi.getUser);//로그인 api. main에 띄울 것 만 가져옴
+app.post('/users', upload.single('image'),userApi.postUser);//회원가입 api. 로그인하고 uid가 없을 때(프로필 정보 입력)
+app.get('/users', userApi.getAllUser);//전체 회원 조회
+app.put('/users/:id',upload.single('image'),userApi.updateUser);//유저 업데이트
+app.get('/users/:id',userApi.getMyProfile); //내 프로필 정보 가져오기
+
+//메인화면 api
+var mainApi = require('./main');
+app.get('/main/user', mainApi.getUser_main);//메인화면 프로필 보기
+app.get('/main/compet',mainApi.getCompet_main);//메인화면 공모전 정보 보기
 
 
 //팀 생성 api
-app.post('/teams',function(req,res){
+var teamApi = require('./team');
+app.post('/teams', teamApi.postTeam);
+app.delete('/teams/:id',teamApi.deleteTeam);//팀 삭제
+app.get('/teams',teamApi.getAllTeam);//모든 팀 정보 가져오기
+app.get('/teams/:id',teamApi.getTeam);//나의 팀 정보 가져오기(공모전 정보와 함께) 전부
 
-    var C_num = req.body.C_num;
+
+//팀 멤버 관리 api
+var team_memberApi = require('./team_member');
+
+app.post('/team_members',team_memberApi.postTeamMember);//팀원으로 추가하기(팀 가입하기)
+app.get('/team_members',team_memberApi.getAllTeamMember);//모든 팀원 정보 가져오기
+app.post('/team_members/delete',team_memberApi.deleteTeamMember);//팀 탈퇴하기
+
+
+//공모전 정보 api
+var competApi = require('./compet');
+app.get('/compets', competApi.getAllCompet);//공모전 정보 가져오기. 넣는건 크롤링서버에서 함
+
+
+
+app.post('/test',(req,res)=>{
+
     var uid = req.body.uid;
-    var tag = req.body.tag;
-
-    var params = [C_num,uid,tag];
-    var params2 = [uid,uid,C_num,tag];
-
-    var sql = 'insert into TEAM(C_num,uid,tag) values(?,?,?)'
-    
-    var sql2 = 'insert into TEAM_MEMBERS(uid,T_num,is_leader,tag) values (?,(select T_num from TEAM where uid = ? and C_num = ?),true,?)'
-//팀 생성 시 팀장은 자동으로 팀원 추가
-
-    connection.query(sql,params,function(err,result){
-        if (err) {
-            console.log(err);
-        } else {
-            var message = 'success'; //팀 만들기 성공했을 경우에만 팀장 추가
-
-            connection.query(sql2,params2,function(err,result){
-                if (err) {
-                    console.log(err);
-                } else {
-                    var message = 'success';
-                }
-                res.json({
-                    'message': message
-                });
+    var sql = 'insert into TEST(test) values(?)'
+    getC.getConnection((conn)=>{
+        conn.query(sql, uid, function (err, result) {
+        
+            if (err) {
+                console.log(err);
+            } else {
+                var message = 'success';    
+            }
+            res.json({
+                'message': message
             });
-        }
-        res.json({
-            'message': message
         });
+        conn.release();
+
     });
 });
-
-//팀 삭제
-app.delete('/teams/:id',function(req,res){
-    var uid = req.body.uid;
-    var T_num = req.body.T_num;
-
-    var params = [uid,T_num];
-    var sql = 'delete from TEAM where uid=? and T_num=?'
-
-    connection.query(sql,params,function (err, result) {
-        
-        if (err) {
-            console.log(err);
-        } else {
-            var message = 'success';
-        }
-    });
-});
-
-//모든 팀 정보 가져오기
-app.get('/teams',function(req,res){
-
-    var sql = 'select * from TEAM'
-
-    connection.query(sql,function(err,result){
-        if(err){
-            console.log(err);
-        }
-        else {
-            res.json(result); //결과 보냄  
-        }
-    })  
-});
-
-//나의 팀 정보 가져오기(공모전 정보와 함께) 전부
-app.get('/teams/:id',function(req,res){
-
-    var uid = req.body.uid;
-    var sql = 'SELECT a.*,b.* FROM TEAM as a INNER JOIN COMPET_INFO as b ON a.C_num = b.C_num where a.uid = ?'
-
-    connection.query(sql,uid,function(err,result){
-        if(err){
-            console.log(err);
-            console.log(uid)
-            console.log('sibal why')
-        }
-        else{ 
-            if(result.length===0){
-                var message = 'empty'; 
-
-                res.json({ 
-                    'message':message
-                });  
-            }
-            else {
-                res.json(result); 
-            }
-        }
-    })
-});
-
-//팀원으로 추가하기(팀 가입하기)
-app.post('/team_members',function(req,res){
-
-    var uid = req.body.uid;
-    var T_num = req.body.T_num;
-    var resume = req.body.resume;
-    var tag = req.body.tag;
-
-    var params = [uid,T_num,resume,tag];
-
-    var sql = 'insert into TEAM_MEMBERS(uid,T_num,resume,tag) values(?,?,?,?)' 
-    connection.query(sql, params, function (err, result) {
-        
-        if (err) {
-            console.log(err);
-        } else {
-            var message = 'success';
-        }
-        res.json({
-            'message': message
-        });
-    });
-});
-
-//모든 팀원 정보 가져오기
-app.get('/team_members',function(req,res){
-
-    var sql = 'select * from TEAM_MEMBERS'
-
-    connection.query(sql,function(err,result){
-        if(err){
-            console.log(err);
-        }
-        else {
-            res.json(result); //결과 보냄  
-        }
-    })  
-});
-
-//팀 탈퇴하기
-app.delete('/team_members/:id',function(req,res){
-
-    var uid = req.body.uid;
-    var T_num = req.body.T_num;
-    var sql = 'delete from TEAM_MEMBERS where uid=? and T_num=?'
-    connection.query(sql, function (err, result) {
-        
-        if (err) {
-            console.log(err);
-        } else {
-            var message = 'success';
-        }
-    });
-});
-
-app.get('/test', function (req, res)
-{
-    var uid = req.body.uid;
-    console.log(uid);
-    res.json(uid);
-});
-
-
-
-
-
 
 
 //connection.end();
+
