@@ -151,5 +151,5 @@ PUT->    /users/:id
 ```
 
 ```
-https://user-images.githubusercontent.com/74356312/142929864-f1587a79-a545-4f18-be90-6cd754a88fb9.png
+![image](https://user-images.githubusercontent.com/74356312/142930152-b7099299-c850-470e-889b-deff4ab8bfbc.png)
 
