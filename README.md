@@ -148,8 +148,6 @@ GET->    /users/:id
 PUT->    /users/:id
 ```
 #### 반환 형식(예시)
-```
 
-```
 ![image](https://user-images.githubusercontent.com/74356312/142930152-b7099299-c850-470e-889b-deff4ab8bfbc.png)
 
