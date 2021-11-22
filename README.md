@@ -151,7 +151,5 @@ PUT->    /users/:id
 ```
 
 ```
-![image](https://user-images.githubusercontent.com/74356312/142929823-971a7eeb-1ba8-4b50-9159-20ba4ca050c0.png)
-
-
+https://github.com/Moizar-BRIDGE/server-api/issues/2#issue-1060560812
 
