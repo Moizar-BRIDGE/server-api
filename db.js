@@ -7,7 +7,7 @@ const Schema = require('validate');
 exports.reqBodySchema = new Schema({
   "name": {
       type :String,
-      required : true,
+      required : false,
       length:{min:1, max:30}
   },
 })

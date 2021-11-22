@@ -13,13 +13,12 @@ exports.postTeam= function(req,res){
     var num_member = req.body.num_member;
     var title = req.body.title;
 
-
     var params = [C_num,uid,tag,limit_member,limit_date,num_member,title];
     var params2 = [uid,uid,C_num,tag];
 
-    var sql = 'insert into TEAM(C_num,uid,tag,limit_member,limit_date,d_day,title) values(?,?,?,?,?,DATEDIFF(limit_date, now()),?,?)'
-    
-    var sql2 = 'insert into TEAM_MEMBERS(uid,T_num,is_leader,tag) values (?,(select T_num from TEAM where uid = ? and C_num = ?),true,?)'
+    var sql = 'insert into TEAM(C_num,uid,tag,limit_member,limit_date,d_day,title) values(?,?,?,?,?,DATEDIFF(limit_date, now()),?)';
+    var sql2 = 'insert into TEAM_MEMBERS(uid,T_num,is_leader,tag) values (?,(select T_num from TEAM where uid = ? and C_num = ?),true,?)';
+
     //팀 생성 시 팀장은 자동으로 팀원 추가
     db.getConnection((conn)=>{
         conn.query(sql,params,function(err,result){
@@ -33,10 +32,10 @@ exports.postTeam= function(req,res){
                         res.status(401);
                     } else {
                         res.status(201); 
-                    }
+                    };
                    
                 });
-            }
+            };
             
         });
         conn.release();

@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-    app.listen(3000, 'localhost', function () {
+    app.listen(8080, 'ec2-52-79-41-120.ap-northeast-2.compute.amazonaws.com', function () {
         console.log('서버 실행 중...');
         
     });  
@@ -39,21 +39,21 @@ app.use(bodyParser.urlencoded({extended: true}));
             },
         }),
       });
-    
     //connection.connect();
+
+    
 //유저, 프로필 관련
 var userApi = require('./user');
-
 app.get('/users/login/:id', userApi.getUser);//로그인 api. main에 띄울 것 만 가져옴
 app.post('/users', upload.single('image'),userApi.postUser);//회원가입 api. 로그인하고 uid가 없을 때(프로필 정보 입력)
 app.get('/users/alluser/:id', userApi.getAllUser);//전체 회원 조회
 app.put('/users/:id',upload.single('image'),userApi.updateUser);//유저 업데이트
-app.get('/users/:id',userApi.getMyProfile); //내 프로필 정보 가져오기
+app.get('/users/:id',userApi.getMyProfile); //내 프로필 정보 가져오기 - 다른사람 프로필 가져올때는 다른사람 id 보내주면 됨.
 
 //메인화면 api
 var mainApi = require('./main');
-app.get('/main/user/:id', mainApi.getUser_main);//메인화면 프로필 보기
-app.get('/main/compet/:id',mainApi.getCompet_main);//메인화면 공모전 정보 보기
+app.get('/main/users/:id', mainApi.getUser_main);//메인화면 프로필 보기
+app.get('/main/compets',mainApi.getCompet_main);//메인화면 공모전 정보 보기
 
 //좋아요 처리 api
 var likeApi = require('./like');
@@ -80,8 +80,18 @@ app.get('/compets', competApi.getAllCompet);//공모전 정보 가져오기. 넣
 
 //공모전 북마크 처리 api
 var bookmarkApi = require('./bookmark');
-app.post('/bookmark',bookmarkApi.putBookmark);
-app.post('/bookmark/delete',bookmarkApi.deleteBookmark);
+app.post('/bookmark',bookmarkApi.putBookmark); //북마크 추가
+app.post('/bookmark/delete',bookmarkApi.deleteBookmark); //북마크 삭제
+
+//태그 처리 api
+var tagApi = require('./stack');
+app.get('./tag/title',tagApi.getTitle); //큰 태그 가져오기
+app.get('./tag/tech',tagApi.getTech); //가져온 큰 태그에 맞춰 작은 태그 보여주기
+app.post('./tag/puttech',tagApi.putTech); //내 기술목록으로 넣기
+app.post('./tag/delete',tagApi.deleteTech); //넣은 태그 삭제하기(취소)
+app.get('./tag/getmytech',tagApi.getMyTech); //내 기술목록 가져오기. 다른사람꺼 가져올때도 이거 사용. 
+
+
 
 app.post('/test',(req,res)=>{
 
