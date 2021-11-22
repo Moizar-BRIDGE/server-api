@@ -34,5 +34,6 @@ new 메세지를 받고 정보입력이 모두 완료되면 사용
 POST->    /users
 ```
 ```
-https://github.com/Moizar-BRIDGE/server-api/issues/1#issue-1060530534
+![image](https://user-images.githubusercontent.com/74356312/142925310-d17fedfb-1bc4-4fa4-a069-662bea5cd0f7.png)
+
 ```
