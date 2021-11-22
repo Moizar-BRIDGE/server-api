@@ -66,10 +66,10 @@ app.post('/teams', teamApi.postTeam); //팀 생성
 app.post('/teams/:id',teamApi.deleteTeam);//팀 삭제
 app.get('/teams',teamApi.getAllTeam);//모든 팀 정보 가져오기
 app.get('/teams/:id',teamApi.getTeam);//나의 팀 정보 가져오기(공모전 정보와 함께) 전부
+app.get('/teams/select',teamApi.getSelectTeam);//선택한 팀 정보 가져오기
 
 //팀 멤버 관리 api
 var team_memberApi = require('./team_member');
-
 app.post('/team_members',team_memberApi.postTeamMember);//팀원으로 추가하기(팀 가입하기)
 app.get('/team_members',team_memberApi.getAllTeamMember);//팀원 정보 가져오기
 app.post('/team_members/delete',team_memberApi.deleteTeamMember);//팀 탈퇴하기
