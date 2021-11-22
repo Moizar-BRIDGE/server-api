@@ -16,5 +16,3 @@ exports.getAllCompet=function(req,res){
         }
     })  
 };
-
-//북마크 처리

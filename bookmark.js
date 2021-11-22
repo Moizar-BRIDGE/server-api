@@ -1,13 +1,13 @@
 var db = require('./db');
 reqBodySchema = db.reqBodySchema;
 
-//좋아요 처리
-exports.putLike = function(req,res){
+//북마크 처리
+exports.putBookmark = function(req,res){
     var uid = req.body.uid;
-    var inter_uid = req.body.inter_uid;
+    var T_num = req.body.T_num;
 
-    var params = [uid,inter_uid];
-    var sql = 'insert into INTEREST set uid = ?, inter_uid = ?'
+    var params = [uid,T_num];
+    var sql = 'insert into BOOKMARK set uid = ?, T_num = ?'
 
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) {
@@ -23,14 +23,14 @@ exports.putLike = function(req,res){
     });
 };
 
-//좋아요 취소
-exports.deleteLike = function(req,res){
+//북마크 취소
+exports.deleteBookmark = function(req,res){
 
     var uid = req.body.uid;
-    var inter_uid = req.body.inter_uid;
+    var T_num = req.body.T_num;
 
-    var params = [uid,inter_uid];
-    var sql = 'delete from INTEREST where uid=? and inter_uid=?'
+    var params = [uid,T_num];
+    var sql = 'delete from BOOKMARK where uid=? and T_num=?'
 
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) {

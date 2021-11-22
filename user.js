@@ -82,10 +82,11 @@ exports.postUser = function (req,res){
 //전체 회원 조회
 exports.getAllUser = function (req, res) 
 {
-    var sql = 'SELECT a.uid,a.name,a.image,a.tag,a.school,a.major, b.is_like from PROFILE as a LEFT JOIN INTEREST as b ON a.uid = b.inter_uid  order by a.uid desc'
+    var uid = req.params.id;
+    var sql = 'SELECT a.uid,a.name,a.image,a.tag,a.school,a.major, b.is_like from PROFILE as a LEFT JOIN INTEREST as b ON a.uid = (select b.inter_uid  where b.uid = ?) order by a.uid desc'
     
     db.getConnection((conn)=>{
-        conn.query(sql,function(err,result){
+        conn.query(sql,uid,function(err,result){
             if(err){
                 console.log(err);
                 res.status(500);
