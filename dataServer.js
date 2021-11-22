@@ -41,10 +41,10 @@ app.use(bodyParser.urlencoded({extended: true}));
       });
     //connection.connect();
 
-    
+
 //유저, 프로필 관련
 var userApi = require('./user');
-app.get('/users/login/:id', userApi.getUser);//로그인 api. main에 띄울 것 만 가져옴
+app.get('/users/login/:id', userApi.getUser);//로그인 api. main에 띄운 것 만 가져옴
 app.post('/users', upload.single('image'),userApi.postUser);//회원가입 api. 로그인하고 uid가 없을 때(프로필 정보 입력)
 app.get('/users/alluser/:id', userApi.getAllUser);//전체 회원 조회
 app.put('/users/:id',upload.single('image'),userApi.updateUser);//유저 업데이트
@@ -60,13 +60,13 @@ var likeApi = require('./like');
 app.post('/like',likeApi.putLike); //좋아요 사람 추가
 app.post('/like/delete',likeApi.deleteLike); //좋아요 사람 삭제
 
-//팀 생성 api
+//팀 관련 api
 var teamApi = require('./team');
 app.post('/teams', teamApi.postTeam); //팀 생성
-app.post('/teams/:id',teamApi.deleteTeam);//팀 삭제
-app.get('/teams',teamApi.getAllTeam);//모든 팀 정보 가져오기
+app.post('/teams/delete',teamApi.deleteTeam);//팀 삭제
+app.get('/teams/allteams/:id',teamApi.getAllTeam);//모든 팀 정보 가져오기
 app.get('/teams/:id',teamApi.getTeam);//나의 팀 정보 가져오기(공모전 정보와 함께) 전부
-app.get('/teams/select',teamApi.getSelectTeam);//선택한 팀 정보 가져오기
+app.get('/teams/select/:id',teamApi.getSelectTeam);//선택한 팀 정보 가져오기
 
 //팀 멤버 관리 api
 var team_memberApi = require('./team_member');
@@ -85,11 +85,11 @@ app.post('/bookmark/delete',bookmarkApi.deleteBookmark); //북마크 삭제
 
 //태그 처리 api
 var tagApi = require('./stack');
-app.get('./tag/title',tagApi.getTitle); //큰 태그 가져오기
-app.get('./tag/tech',tagApi.getTech); //가져온 큰 태그에 맞춰 작은 태그 보여주기
-app.post('./tag/puttech',tagApi.putTech); //내 기술목록으로 넣기
-app.post('./tag/delete',tagApi.deleteTech); //넣은 태그 삭제하기(취소)
-app.get('./tag/getmytech',tagApi.getMyTech); //내 기술목록 가져오기. 다른사람꺼 가져올때도 이거 사용. 
+app.get('/tag/title',tagApi.getTitle); //큰 태그 가져오기
+app.get('/tag/tech/:title_num',tagApi.getTech); //가져온 큰 태그에 맞춰 작은 태그 보여주기
+app.post('/tag/puttech',tagApi.putTech); //내 기술목록으로 넣기
+app.post('/tag/delete',tagApi.deleteTech); //넣은 태그 삭제하기(취소)
+app.get('/tag/getmytech/:id',tagApi.getMyTech); //내 기술목록 가져오기. 다른사람꺼 가져올때도 이거 사용. 
 
 
 

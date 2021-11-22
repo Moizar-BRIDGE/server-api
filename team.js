@@ -7,17 +7,17 @@ exports.postTeam= function(req,res){
 
     var C_num = req.body.C_num;
     var uid = req.body.uid;
-    var tag = req.body.tag;
     var limit_member = req.body.limit_member;
     var limit_date = req.body.limit_date;
     var num_member = req.body.num_member;
     var title = req.body.title;
+    var uid2 = uid;
 
-    var params = [C_num,uid,tag,limit_member,limit_date,num_member,title];
-    var params2 = [uid,uid,C_num,tag];
+    var params = [C_num,uid,limit_member,limit_date,title];
+    var params2 = [uid,uid2,C_num];
 
-    var sql = 'insert into TEAM(C_num,uid,tag,limit_member,limit_date,d_day,title) values(?,?,?,?,?,DATEDIFF(limit_date, now()),?)';
-    var sql2 = 'insert into TEAM_MEMBERS(uid,T_num,is_leader,tag) values (?,(select T_num from TEAM where uid = ? and C_num = ?),true,?)';
+    var sql = 'insert into TEAM(C_num,uid,limit_member,limit_date,d_day,title) values(?,?,?,?,DATEDIFF(limit_date, now()),?)';
+    var sql2 = 'insert into TEAM_MEMBERS(uid,T_num,is_leader) values (?,(select T_num from TEAM where uid = ? and C_num = ?),true)';
 
     //팀 생성 시 팀장은 자동으로 팀원 추가
     db.getConnection((conn)=>{
@@ -33,7 +33,7 @@ exports.postTeam= function(req,res){
                     } else {
                         res.status(201); 
                     };
-                   
+                
                 });
             };
             
@@ -45,15 +45,18 @@ exports.postTeam= function(req,res){
 
 //팀 삭제
 exports.deleteTeam = function(req,res){
-    var uid = req.params.id;
+
+    var uid = req.body.uid;
     var T_num = req.body.T_num;
 
     var params = [uid,T_num];
     var sql = 'delete from TEAM where uid=? and T_num=?'
 
+    
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) {
         
+            console.log(uid,T_num);
             if (err) {
                 console.log(err);
                 res.status(401);
@@ -91,7 +94,7 @@ exports.getAllTeam = function(req,res){
 //선택한 팀 정보 가져오기
 exports.getSelectTeam = function(req,res){
 
-    var uid = req.body.uid;
+    var uid = req.params.uid;
     var T_num = req.body.T_num;
     var params = [uid,T_num];
 
@@ -121,7 +124,7 @@ exports.getTeam = function(req,res){
     var sql = 'SELECT a.T_num,DATEDIFF(a.limit_date, now()) as d_day,a.title, a.limit_member,a.num_member ,b.C_num,b.C_name,b.Cate_num FROM TEAM as a LEFT JOIN COMPET_INFO as b ON a.C_num = b.C_num where a.uid = ?'
 
     db.getConnection((conn)=>{
-        conn.query(sql,function(err,result){
+        conn.query(sql,uid,function(err,result){
             if(err){
                 console.log(err);
                 res.status(401);

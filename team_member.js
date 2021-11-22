@@ -8,11 +8,11 @@ exports.postTeamMember= function(req,res){
     var uid = req.body.uid;
     var T_num = req.body.T_num;
     var resume = req.body.resume;
-    var tag = req.body.tag;
+    
 
-    var params = [uid,T_num,resume,tag];
+    var params = [uid,T_num,resume];
 
-    var sql = 'insert into TEAM_MEMBERS(uid,T_num,resume,tag) values(?,?,?,?)'
+    var sql = 'insert into TEAM_MEMBERS(uid,T_num,resume,is_leader) values(?,?,?,0)'
     var sql2 = 'update TEAM set num_member = num_member + 1 where T_num = ?' 
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) {

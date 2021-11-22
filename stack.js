@@ -24,7 +24,7 @@ exports.getTitle = function(req,res){
 
 //대분류에 맞는 소분류 기술목록 가져오기
 exports.getTech = function(req,res){
-    var title_num = req.title_num;
+    var title_num = req.params.title_num;
     var sql = 'select * from POSITION where title_num = ?'
 
     db.getConnection((conn)=>{
@@ -70,9 +70,9 @@ exports.putTech = function(req,res){
     var uid = req.body.uid;
     var tech_name = req.body.tech_name; 
 
-    var sql = 'insert STACK (uid,tech_name) values (?,?,?)'
+    var sql = 'insert STACK (uid,tech_name) values (?,?)'
 
-    var params = [tech_num,uid,tech_name];
+    var params = [uid,tech_name];
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) 
         {
@@ -91,10 +91,10 @@ exports.putTech = function(req,res){
 exports.deleteTech = function(req,res){
 
     var uid = req.body.uid;
-    var tech_num = req.body.tech_num;
+    var tech_name = req.body.tech_name;
 
-    var sql = 'delete from STACK where uid=? and stack_num=?';
-    var params = [uid,tech_num];
+    var sql = 'delete from STACK where uid=? and tech_name=?';
+    var params = [uid,tech_name];
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) 
         {

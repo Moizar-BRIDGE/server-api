@@ -46,7 +46,7 @@ exports.postUser = function (req,res){
     //var birth = req.body.birth;
     //var blog = req.body.blog;
     //var gender = req.body.gender;
-    var Cate_num = req.body.Cate_num;
+    
     var email = req.body.email;
     var school = req.body.school;
     var major = req.body.major;
@@ -57,8 +57,8 @@ exports.postUser = function (req,res){
         return res.status(400).json({'error': 1, 'message' :validError[0].message});
     };
 
-    var sql = 'insert into PROFILE (uid,name,image,Cate_num,emaile,school,major,resume) values(?,?,?,?,?,?,?,?)';
-    var params = [uid,name,image,Cate_num,email,school,major,resume];
+    var sql = 'insert into PROFILE (uid,name,image,emaile,school,major,resume) values(?,?,?,?,?,?,?)';
+    var params = [uid,name,image,email,school,major,resume];
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) 
         {
@@ -137,14 +137,14 @@ exports.updateUser =function (req, res)
     var birth = req.body.birth;
     var blog = req.body.blog;
     var gender = req.body.gender;
-    var Cate_num = req.body.Cate_num;
+    //var Cate_num = req.body.Cate_num;
     var email = req.body.email;
     var school = req.body.school;
     var major = req.body.major;
-    var tag = req.body.tag;
+    var resume = req.body.resume;
 
-    var params = [name,image,birth,blog,gender,Cate_num,email,school,major,tag,uid];
-    var sql = 'update PROFILE set name = ?, image = ?, birth = ?, blog = ?, gender = ?, Cate_num = ?, emaile = ? ,school=?, major =?,tag=? where uid = ?'
+    var params = [name,image,birth,blog,gender,email,school,major,resume,uid];
+    var sql = 'update PROFILE set name = ?, image = ?, birth = ?, blog = ?, gender = ?, emaile = ? ,school=?, major =?,resume=? where uid = ?'
     
     db.getConnection((conn)=>{
         conn.query(sql, params, function (err, result) {
