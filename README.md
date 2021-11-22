@@ -118,10 +118,10 @@ GET->    /users/:id
 다른 사람 것 볼 땐 그 사람 id 입력
 ```
 GET->    /users/:id
-
-#### 반환 형식(예시)
 ```
+#### 반환 형식(예시)
 
+```
 [
     {
         "uid": "20",
@@ -146,7 +146,7 @@ GET->    /users/:id
 정보 수정
 ```
 PUT->    /users/:id
-
+```
 #### 반환 형식(예시)
 
 ![image](https://user-images.githubusercontent.com/74356312/142930152-b7099299-c850-470e-889b-deff4ab8bfbc.png)
