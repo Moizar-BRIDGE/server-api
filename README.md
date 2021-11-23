@@ -283,10 +283,14 @@ POST->  /teams
 ```
 {
     "uid": 20,
-    "C_num": 4,   //공모전 클릭해서 따온 공모전 id
-    "limit_member" : 4,   //제한인원
-    "limit_date" : 20211220,   //팀장 정한 마감일
-    "title" : "누구누구를 구합니다!!" 
+    "C_num": 4,   //공모전 번호
+    "limit_member" : 4,
+    "num_member" : 1,    //현재 인원
+    "limit_date" : 20211220,
+    "title" : "프론트 개발자, 디자인" ,
+    "app_condition" : "열심히 할 사람",    //지원 조건
+    "prefer" : "프로젝트 경험 있는사람",   //우대사항
+    "detail" : "상세 내용",
     
 }
 ```
