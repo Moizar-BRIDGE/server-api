@@ -17,6 +17,7 @@ exports.putLike = function(req,res){
                 res.status(401);
             } else {
                 res.status(200); 
+                res.json({'message':'success'});
             }
         });
         conn.release();
@@ -40,6 +41,7 @@ exports.deleteLike = function(req,res){
                 res.status(401);
             } else {
                 res.status(200); 
+                res.json({'message':'success'});
             }
         });
         conn.release();
