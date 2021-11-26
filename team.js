@@ -151,7 +151,7 @@ exports.getMyTeam = function(req,res){
                 console.log(err);
                 res.status(401);
             }
-            if(result.length===0){
+            if(team_info.length===0){
                 var message = 'my team is empty';  //내 팀 정보 없음
                 res.status(204).json(message);  
             }

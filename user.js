@@ -15,7 +15,7 @@ exports.getUser = function(req,res)
                 res.status(401);
             }
             else{ //uid 저장된게 없는 경우 (처음 로그인)
-                if(result.length===0){
+                if(user.length===0){
                     var message = 'new'; //첫 로그인임을 알림
     
                     res.json({ //보내기 
@@ -24,7 +24,7 @@ exports.getUser = function(req,res)
                 }
                 else {
                     res.status(200); 
-                    res.json(user); //결과 보냄
+                    res.json({user}); //결과 보냄
                 }
             }
         })  

@@ -7,7 +7,7 @@ exports.getSearchTeam = function(req,res){
 
     var uid = req.params.id;
     var search_word = req.body.search_word;
-    var params = [uid,search_word,search_word,search_word];
+    var params = [uid,search_word,search_word,search_word,search_word];
 
     var sql = 'SELECT a.T_num,DATEDIFF(a.limit_date, now()) as d_day,a.title, a.limit_member,a.num_member ,a.recruit, b.C_num,b.C_name,b.cate_name,b.d_day, c.is_book FROM TEAM as a LEFT JOIN COMPET_INFO as b ON a.C_num = b.C_num LEFT JOIN BOOKMARK as c ON a.T_num =(select c.T_num where c.uid = ?) where a.title like "%"?"%" or a.search_tag like "%"?"%" or b.C_name like "%"?"%" or b.cate_name like "%"?"%"'
 
@@ -56,7 +56,7 @@ exports.getFilterTeam = function(req,res){
                 res.status(401);
             }
             else {
-                console.log(result.C_name);
+                
                 res.status(200); 
                 res.json({teams}); //결과 보냄  
             }
@@ -119,7 +119,7 @@ exports.getFilterProfile = function(req,res){
                 res.status(401);
             }
             else {
-                console.log(result.C_name);
+                
                 res.status(200); 
                 res.json({profiles}); //결과 보냄  
             }
@@ -183,7 +183,7 @@ exports.getFilterCompet = function(req,res){
                 res.status(401);
             }
             else {
-                console.log(result.C_name);
+               
                 res.status(200); 
                 res.json({profiles}); //결과 보냄  
             }

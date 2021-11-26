@@ -13,17 +13,19 @@ exports.applyTeam = function(req,res){
     var params = [uid,T_num];
 
     var sql = 'select a.T_num, b.C_name,c.school,c.major from TEAM as a left join COMPET_INFO as b on a.C_num = b.C_num left join PROFILE as c on c.uid = ? where T_num = ?'
+    db.getConnection((conn)=>{
 
-    conn.query(sql,params,function(err,app_info){
-        if(err){
-            console.log(err);
-            res.status(401);
-        }
-        else {
-            res.status(200); 
-            //res.json(result); //결과 보냄  
-            res.json({app_info});
-        }
+        conn.query(sql,params,function(err,app_info){
+            if(err){
+                console.log(err);
+                res.status(401);
+            }
+            else {
+                res.status(200); 
+                //res.json(result); //결과 보냄  
+                res.json({app_info});
+            }
+        });
     });
 }
 

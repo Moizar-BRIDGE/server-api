@@ -17,6 +17,7 @@ exports.putBookmark = function(req,res){
                 res.status(401);
             } else {
                 res.status(200); 
+                res.json({'message':'success'});
             }
         });
         conn.release();
@@ -40,6 +41,7 @@ exports.deleteBookmark = function(req,res){
                 res.status(401);
             } else {
                 res.status(200); 
+                res.json({'message':'success'});
             }
         });
         conn.release();
@@ -64,7 +66,7 @@ exports.putCompetBookmark = function(req,res){
                 res.status(401);
             } else {
                 res.status(200); 
-                res.json("success");
+                res.json({'message':'success'});
             }
         });
         conn.release();
@@ -88,7 +90,7 @@ exports.deleteCompetBookmark = function(req,res){
                 res.status(401);
             } else {
                 res.status(200); 
-                res.json("success");
+                res.json({'message':'success'});
             }
         });
         conn.release();
