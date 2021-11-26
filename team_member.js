@@ -29,6 +29,7 @@ exports.postTeamMember= function(req,res){
                     }
                     else
                     res.status(201);
+                    res.json({'message':'success'});
                 });
                 //res.status(201);   
             } 
@@ -41,22 +42,23 @@ exports.postTeamMember= function(req,res){
 exports.getAllTeamMember=function(req,res){
 
     var T_num = req.body.T_num;
-    var sql = 'select * from TEAM_MEMBERS where T_num = ?'
+    var sql = 'SELECT b.uid,a.is_leader,b.name,b.image,c.tech_name,b.school,b.major from TEAM_MEMBERS as a LEFT JOIN PROFILE as b on a.uid = b.uid LEFT JOIN STACK as c on a.uid = c.uid where a.T_num = ? group by a.uid '
 
     db.getConnection((conn)=>{
-        conn.query(sql,T_num,function(err,result){
+        conn.query(sql,T_num,function(err,team_members){
             if(err){
                 console.log(err);
                 res.status(401);
             }
             else {
                 res.status(200); 
-                res.json(result); //결과 보냄  
+                res.json({team_members}); //결과 보냄  
             }
         });
         conn.release();
     });
 };
+
 
 //팀 탈퇴하기
 exports.deleteTeamMember = function(req,res){
@@ -74,6 +76,7 @@ exports.deleteTeamMember = function(req,res){
                 res.status(401);
             } else {
                 res.status(200);
+                res.json({'message':'success'});
             }
             
         });

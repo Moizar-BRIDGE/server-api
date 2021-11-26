@@ -8,14 +8,14 @@ exports.getTitle = function(req,res){
     var sql = 'select * from TITLE '
 
     db.getConnection((conn)=>{
-        conn.query(sql,function(err,result){
+        conn.query(sql,function(err,titles){
             if(err){
                 console.log(err);
                 res.status(500);
             }
             else {
                 res.status(200); 
-                res.json(result); //결과 보냄  
+                res.json({titles}); //결과 보냄  
             }
         });
         conn.release();
@@ -28,14 +28,14 @@ exports.getTech = function(req,res){
     var sql = 'select * from POSITION where title_num = ?'
 
     db.getConnection((conn)=>{
-        conn.query(sql,title_num,function(err,result){
+        conn.query(sql,title_num,function(err,positions){
             if(err){
                 console.log(err);
                 res.status(500);
             }
             else {
                 res.status(200); 
-                res.json(result); //결과 보냄  
+                res.json({positions}); //결과 보냄  
             }
         });
         conn.release();
@@ -48,21 +48,19 @@ exports.getMyTech = function(req,res){
     var sql = 'select * from STACK where uid = ?'
 
     db.getConnection((conn)=>{
-        conn.query(sql,uid,function(err,result){
+        conn.query(sql,uid,function(err,positions){
             if(err){
                 console.log(err);
                 res.status(500);
             }
             else {
                 res.status(200); 
-                res.json(result); //결과 보냄  
+                res.json({positions}); //결과 보냄  
             }
         });
         conn.release();
     });
 }
-
-
 
 //기술 넣기
 exports.putTech = function(req,res){
@@ -81,6 +79,7 @@ exports.putTech = function(req,res){
                 res.status(401);
             } else {
                 res.status(201);
+                res.json({'message':'success'});
             }
         });
         conn.release();
@@ -103,6 +102,7 @@ exports.deleteTech = function(req,res){
                 res.status(401);
             } else {
                 res.status(201);
+                res.json({'message':'success'});
             }
         });
         conn.release();
